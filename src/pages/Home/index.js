@@ -7,8 +7,6 @@ import Icon from 'react-native-vector-icons/Feather';
 
 import {
   Container,
-  SettingsButton,
-  CloseAppButton,
   HeaderTitle,
   CityContainer,
   CityTitle,
@@ -32,19 +30,22 @@ const exampleData = [
 const Home = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <CloseAppButton onPress={() => console.log('x')}>
-          <Icon name="x" size={24} color="#fff" />
-        </CloseAppButton>
-      ),
       headerTitle: () => <HeaderTitle>Favoritos</HeaderTitle>,
-      headerRight: () => (
-        <SettingsButton onPress={() => console.log('settings')}>
-          <Icon name="settings" size={24} color="#fff" />
-        </SettingsButton>
-      ),
       headerTransparent: true,
       headerStyle: { borderBottomWidth: 0 },
+
+      // Next section unecessary at the moment:
+
+      // headerLeft: () => (
+      //   <CloseAppButton onPress={() => console.log('x')}>
+      //     <Icon name="x" size={24} color="#fff" />
+      //   </CloseAppButton>
+      // ),
+      // headerRight: () => (
+      //   <SettingsButton onPress={() => console.log('settings')}>
+      //     <Icon name="settings" size={24} color="#fff" />
+      //   </SettingsButton>
+      // ),
     });
   }, [navigation]);
   return (
