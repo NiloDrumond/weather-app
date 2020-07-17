@@ -31,7 +31,7 @@ export const CityContainer = styled(RectButton)`
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 48, 79, 0.8);
   border-radius: 10px;
 `;
 

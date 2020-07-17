@@ -1,5 +1,4 @@
 import React, { useLayoutEffect } from 'react';
-import { FlatList } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
@@ -47,15 +46,15 @@ const exampleData = [
 
 const degrees = '\u00B0';
 
-const Day = ({ navigation }) => {
+const Day = ({ route, navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => <HeaderTitle>Recife</HeaderTitle>,
+      headerTitle: () => <HeaderTitle>{route.params.city}</HeaderTitle>,
       headerTransparent: true,
       headerStyle: { borderBottomWidth: 0, height: 70 },
 
       headerLeft: () => (
-        <ReturnButton onPress={() => console.log('return')}>
+        <ReturnButton onPress={() => navigation.pop()}>
           <Icon name="chevron-left" size={40} color="#fff" />
         </ReturnButton>
       ),
@@ -100,22 +99,6 @@ const Day = ({ navigation }) => {
           <Date>Terça-feira, 15 de Julho, 2020</Date>
         </MainSection>
         <BottomSection>
-          {/* <FlatList
-            data={exampleData}
-            horizontal
-            keyExtractor={day => day.date}
-            style={{ flex: 1, flexGrow: 1, width: '100%' }}
-            renderItem={({ item: day }) => (
-              <NextWeather>
-                <Icon name="cloud" size={48} color="#fff" />
-                <NextTemp>
-                  25
-                  {degrees}
-                </NextTemp>
-                <NextDay>{day.weekday}</NextDay>
-              </NextWeather>
-            )}
-          /> */}
           <NextWeather>
             <Icon name="cloud" size={48} color="#fff" />
             <NextTemp>

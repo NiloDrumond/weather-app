@@ -1,9 +1,11 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useCallback } from 'react';
 import { FlatList, Text } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
+
+import { useWeather } from '../../hooks/weather';
 
 import {
   Container,
@@ -28,29 +30,27 @@ const exampleData = [
 ];
 
 const Home = ({ navigation }) => {
+  const { getWeatherByCoordinate } = useWeather();
+
+  const handleCityClick = useCallback(
+    name => {
+      navigation.push('Day', { city: name });
+    },
+    [navigation],
+  );
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => <HeaderTitle>Favoritos</HeaderTitle>,
       headerTransparent: true,
       headerStyle: { borderBottomWidth: 0 },
-
-      // Next section unecessary at the moment:
-
-      // headerLeft: () => (
-      //   <CloseAppButton onPress={() => console.log('x')}>
-      //     <Icon name="x" size={24} color="#fff" />
-      //   </CloseAppButton>
-      // ),
-      // headerRight: () => (
-      //   <SettingsButton onPress={() => console.log('settings')}>
-      //     <Icon name="settings" size={24} color="#fff" />
-      //   </SettingsButton>
-      // ),
     });
   }, [navigation]);
   return (
     <LinearGradient
-      colors={['#13315b', '#0091d4']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      colors={['#E820A2', '#09DEE8']}
       locations={[0, 1]}
       style={{ flex: 1, alignItems: 'center', jusitifyContent: 'center' }}
     >
@@ -62,7 +62,7 @@ const Home = ({ navigation }) => {
           renderItem={({ item: city }) => (
             <CityContainer
               onPress={() => {
-                console.log(city.name);
+                handleCityClick(city.name);
               }}
             >
               <CityTitle>{city.name}</CityTitle>
@@ -81,7 +81,7 @@ const Home = ({ navigation }) => {
         <CityContainer
           style={{ justifyContent: 'center', alignItems: 'center' }}
           onPress={() => {
-            console.log('adicionar');
+            getWeatherByCoordinate({ lat: 8.0522, lon: 34.9286 });
           }}
         >
           <Icon
