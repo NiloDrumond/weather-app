@@ -2613,6 +2613,11 @@ domexception@^1.0.1:
   dependencies:
     webidl-conversions "^4.0.2"
 
+dotenv@^8.0.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
+  integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
+
 ecc-jsbn@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.2.tgz#3a83a904e54353287874c564b7549386849a98c9"
@@ -6136,6 +6141,13 @@ react-native-cli@^2.0.1:
     minimist "^1.2.0"
     prompt "^0.2.14"
     semver "^5.0.3"
+
+react-native-dotenv@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-dotenv/-/react-native-dotenv-2.2.0.tgz#d64289483c7956b97424b34164e56995e9919976"
+  integrity sha512-awcQNP7XBOJYR0RGAAgF/ia9yQeJgE023xUii/DiaTo/jDcnJEOXCPepnTmYsgk8Wtj6argVDBFAeAi3nUOfAw==
+  dependencies:
+    dotenv "^8.0.0"
 
 react-native-gesture-handler@^1.6.1:
   version "1.6.1"
