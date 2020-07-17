@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useCallback } from 'react';
+import React, { useLayoutEffect, useCallback, useState, useRef } from 'react';
 import { FlatList, Text } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 
@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Feather';
 
 import { useWeather } from '../../hooks/weather';
 import HeaderTitle from '../../components/HeaderTitle';
+import Popup from '../../components/Popup';
 
 import {
   Container,
@@ -31,6 +32,7 @@ const exampleData = [
 
 const Home = ({ navigation }) => {
   const { getWeatherByCoordinate } = useWeather();
+  const addPopupRef = useRef(null);
 
   const handleCityClick = useCallback(
     name => {
@@ -40,7 +42,7 @@ const Home = ({ navigation }) => {
   );
 
   const handleAddCity = useCallback(() => {
-    navigation.push('Map');
+    addPopupRef.current.toggle();
   }, [navigation]);
 
   useLayoutEffect(() => {
@@ -59,6 +61,19 @@ const Home = ({ navigation }) => {
       style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
     >
       <Container headerHeight={`${useHeaderHeight()}px`}>
+        <Popup
+          ref={addPopupRef}
+          description="Selecionar localização:"
+          isVisible
+          button1={{
+            text: 'Atual',
+            callback: () => console.log('ok'),
+          }}
+          button2={{
+            text: 'Mapa',
+            callback: () => navigation.push('Map'),
+          }}
+        />
         <FlatList
           data={exampleData}
           keyExtractor={city => city.name}

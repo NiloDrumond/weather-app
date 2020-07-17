@@ -5,7 +5,7 @@ import {
   weatherNextApi,
   weatherApi,
 } from '../services/weatherApi';
-import { apikey } from '../global';
+import { weatherkey } from '../global';
 
 const WeatherContext = createContext();
 
@@ -31,13 +31,13 @@ export const WeatherProvider = ({ children }) => {
   const getWeatherByCoordinate = useCallback(async ({ lat, lon }) => {
     try {
       let response = await weatherApi.get(
-        `?lat=-8.05&lon=-34.88&appid=a59a527dd75c144615c3316f0fd4c6d0`,
+        `?lat=-8.05&lon=-34.88&appid=${weatherkey}`,
       );
       response = await weatherCurrentApi.get(
-        `?lat=-8.05&lon=-34.88&appid=a59a527dd75c144615c3316f0fd4c6d0`,
+        `?lat=-8.05&lon=-34.88&appid=${weatherkey}`,
       );
       response = await weatherNextApi.get(
-        `?lat=-8.05&lon=-34.88&appid=a59a527dd75c144615c3316f0fd4c6d0`,
+        `?lat=-8.05&lon=-34.88&appid=${weatherkey}`,
       );
       console.log(response);
     } catch (err) {
