@@ -9,8 +9,8 @@ const App = createStackNavigator();
 
 const Routes = () => (
   <App.Navigator>
-    {/* <App.Screen name="Home" component={Home} />
-    <App.Screen name="Day" component={Day} /> */}
+    <App.Screen name="Home" component={Home} />
+    <App.Screen name="Day" component={Day} />
     <App.Screen name="Map" component={Map} />
   </App.Navigator>
 );

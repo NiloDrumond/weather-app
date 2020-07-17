@@ -10,7 +10,7 @@ export const SettingsButton = styled.TouchableOpacity`
 `;
 
 export const ReturnButton = styled.TouchableOpacity`
-  margin-left: 20px;
+  margin-left: 15px;
 `;
 
 export const MainSection = styled.View`

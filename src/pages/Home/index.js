@@ -6,10 +6,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { useWeather } from '../../hooks/weather';
+import HeaderTitle from '../../components/HeaderTitle';
 
 import {
   Container,
-  HeaderTitle,
   CityContainer,
   CityTitle,
   CityWeather,
@@ -39,6 +39,10 @@ const Home = ({ navigation }) => {
     [navigation],
   );
 
+  const handleAddCity = useCallback(() => {
+    navigation.push('Map');
+  }, [navigation]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => <HeaderTitle>Favoritos</HeaderTitle>,
@@ -52,7 +56,7 @@ const Home = ({ navigation }) => {
       end={{ x: 0, y: 1 }}
       colors={['#E820A2', '#09DEE8']}
       locations={[0, 1]}
-      style={{ flex: 1, alignItems: 'center', jusitifyContent: 'center' }}
+      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
     >
       <Container headerHeight={`${useHeaderHeight()}px`}>
         <FlatList
@@ -81,7 +85,7 @@ const Home = ({ navigation }) => {
         <CityContainer
           style={{ justifyContent: 'center', alignItems: 'center' }}
           onPress={() => {
-            getWeatherByCoordinate({ lat: 8.0522, lon: 34.9286 });
+            handleAddCity();
           }}
         >
           <Icon

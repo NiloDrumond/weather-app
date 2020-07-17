@@ -7,13 +7,6 @@ export const Container = styled.View`
   margin-top: ${props => props.headerHeight};
 `;
 
-export const HeaderTitle = styled.Text`
-  font-size: 24px;
-  color: #fff;
-  font-family: 'Roboto-Regular';
-  align-self: center;
-`;
-
 export const SettingsButton = styled.TouchableOpacity`
   color: #fff;
   margin-right: 20px;

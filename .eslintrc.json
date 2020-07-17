@@ -23,6 +23,7 @@
     "prettier/prettier": "error",
     "react/display-name": "off",
     "import/prefer-default-export": "off",
+    "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
     "react/prop-types": [
       "error",

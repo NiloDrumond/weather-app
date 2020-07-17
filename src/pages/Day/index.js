@@ -55,12 +55,12 @@ const Day = ({ route, navigation }) => {
 
       headerLeft: () => (
         <ReturnButton onPress={() => navigation.pop()}>
-          <Icon name="chevron-left" size={40} color="#fff" />
+          <Icon name="chevron-left" size={30} color="#fff" />
         </ReturnButton>
       ),
       headerRight: () => (
         <SettingsButton onPress={() => console.log('settings')}>
-          <Icon name="settings" size={40} color="#fff" />
+          <Icon name="settings" size={30} color="#fff" />
         </SettingsButton>
       ),
     });
