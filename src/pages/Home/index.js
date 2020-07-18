@@ -49,7 +49,7 @@ const Home = ({ navigation }) => {
   );
 
   const handleGetPosition = useCallback(async () => {
-    Geolocation.getCurrentPosition(
+    await Geolocation.getCurrentPosition(
       props => {
         const position = {
           lat: props.coords.latitude,
