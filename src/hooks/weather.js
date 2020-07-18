@@ -1,58 +1,72 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
-import {
-  weatherCurrentApi,
-  weatherNextApi,
-  weatherApi,
-} from '../services/weatherApi';
+/* eslint-disable no-restricted-syntax */
+import React, { createContext, useContext, useCallback } from 'react';
 import { weatherkey } from '../global';
 
 const WeatherContext = createContext();
 
 export const WeatherProvider = ({ children }) => {
-  const [data, setData] = useState();
-
-  const processCurrent = useCallback(rawData => {
-    const processedData = {
-      city: {
-        name: rawData.name,
-        id: rawData.id,
-      },
-      weather: {
-        id: rawData.weather[0].id,
-        main: rawData.weather[0].main,
-      },
-      main: rawData.main,
-    };
-
-    console.log(processedData);
-  }, []);
-
-  const getWeatherByCoordinate = useCallback(async ({ lat, lon }) => {
-    try {
-      let response = await weatherApi.get(
-        `?lat=-8.05&lon=-34.88&appid=${weatherkey}`,
-      );
-      response = await weatherCurrentApi.get(
-        `?lat=-8.05&lon=-34.88&appid=${weatherkey}`,
-      );
-      response = await weatherNextApi.get(
-        `?lat=-8.05&lon=-34.88&appid=${weatherkey}`,
-      );
-      console.log(response);
-    } catch (err) {
-      console.log(err.response);
+  const processForecast = useCallback(data => {
+    const forecast = new Map();
+    for (const day of data) {
+      forecast.set(day.dt, {
+        weather: {
+          main: day.weather.main,
+          id: day.weather,
+          wind: day.wind_speed,
+          humidity: day.humidity,
+        },
+        temp: {
+          day: day.temp.day,
+          night: day.temp.night,
+          eve: day.temp.eve,
+          morn: day.temp.morn,
+        },
+      });
     }
+    return forecast;
   }, []);
 
-  const getWeatherByName = useCallback(name => {
-    return data;
-  }, []);
+  const processWeather = useCallback(
+    data => {
+      const { current } = data;
+      const forecast = data.daily;
+      const weather = {
+        current: {
+          date: new Date(current.dt * 1000),
+          weather: {
+            main: current.weather.main,
+            id: current.weather.id,
+            wind: current.wind_speed,
+            humidity: current.humidity,
+          },
+          temp: 27,
+        },
+        forecast: processForecast(forecast),
+      };
+      return weather;
+    },
+    [processForecast],
+  );
+
+  const getWeather = useCallback(
+    async ({ lat, lon }) => {
+      try {
+        // eslint-disable-next-line
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${weatherkey}`,
+        );
+        const json = await response.json();
+        const weather = processWeather(json);
+        return weather;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    [processWeather],
+  );
 
   return (
-    <WeatherContext.Provider
-      value={{ data, getWeatherByCoordinate, getWeatherByName }}
-    >
+    <WeatherContext.Provider value={{ getWeather }}>
       {children}
     </WeatherContext.Provider>
   );

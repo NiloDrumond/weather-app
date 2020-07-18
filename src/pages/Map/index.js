@@ -289,7 +289,7 @@ const Map = ({ navigation }) => {
       headerStyle: {
         borderBottomWidth: 0,
         height: 70,
-        backgroundColor: '#147AA6',
+        backgroundColor: 'rgba(255, 48, 79, 0.8)',
       },
       headerTitleContainerStyle: {
         position: 'absolute',

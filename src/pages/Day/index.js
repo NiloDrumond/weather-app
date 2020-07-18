@@ -64,7 +64,7 @@ const Day = ({ route, navigation }) => {
         </SettingsButton>
       ),
     });
-  }, [navigation]);
+  }, [navigation, route.params.city]);
 
   return (
     <LinearGradient

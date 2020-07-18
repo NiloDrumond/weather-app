@@ -9,7 +9,7 @@ export const Container = styled.View`
   bottom: 0;
   justify-content: flex-end;
   align-items: center;
-  background-color: #147aa6;
+  background-color: rgba(255, 48, 79, 0.8);
 `;
 
 export const ReturnButton = styled.TouchableOpacity`

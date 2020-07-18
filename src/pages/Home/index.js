@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useCallback, useState, useRef } from 'react';
+import Geolocation from '@react-native-community/geolocation';
 import { FlatList, Text } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 
@@ -8,6 +9,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useWeather } from '../../hooks/weather';
 import HeaderTitle from '../../components/HeaderTitle';
 import Popup from '../../components/Popup';
+import CreateFavoritePopup from '../../components/CreateFavoritePopup';
 
 import {
   Container,
@@ -31,19 +33,40 @@ const exampleData = [
 ];
 
 const Home = ({ navigation }) => {
-  const { getWeatherByCoordinate } = useWeather();
+  const [userLocation, setUserLocation] = useState();
+
+  const { getWeather } = useWeather();
   const addPopupRef = useRef(null);
+  const createFavoriteRef = useRef(null);
 
   const handleCityClick = useCallback(
-    name => {
+    async name => {
+      const weather = await getWeather(userLocation);
+      console.log(weather);
       navigation.push('Day', { city: name });
     },
-    [navigation],
+    [getWeather, userLocation, navigation],
   );
+
+  const handleGetPosition = useCallback(async () => {
+    Geolocation.getCurrentPosition(
+      props => {
+        const position = {
+          lat: props.coords.latitude,
+          lon: props.coords.longitude,
+        };
+        setUserLocation({ lat: position.lat, lon: position.lon });
+        createFavoriteRef.current.toggle();
+      },
+      () => {
+        navigation.push('Map');
+      },
+    );
+  }, [navigation]);
 
   const handleAddCity = useCallback(() => {
     addPopupRef.current.toggle();
-  }, [navigation]);
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -67,12 +90,18 @@ const Home = ({ navigation }) => {
           isVisible
           button1={{
             text: 'Atual',
-            callback: () => console.log('ok'),
+            callback: () => handleGetPosition(),
           }}
           button2={{
             text: 'Mapa',
             callback: () => navigation.push('Map'),
           }}
+        />
+        <CreateFavoritePopup
+          ref={createFavoriteRef}
+          coord={userLocation}
+          description="Digite o nome da cidade"
+          isVisible
         />
         <FlatList
           data={exampleData}

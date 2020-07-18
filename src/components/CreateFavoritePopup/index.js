@@ -1,23 +1,40 @@
 import React, {
-  useCallback,
   useState,
-  forwardRef,
+  useCallback,
   useImperativeHandle,
+  forwardRef,
 } from 'react';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Feather';
 
+import { useFavorites } from '../../hooks/favorites';
+
 import {
   Container,
   InsideContainer,
+  Input,
   Description,
   Button,
   ButtonContent,
-  ButtonContainer,
 } from './styles';
 
-const Popup = forwardRef((config, selfRef) => {
+const CreateFavoritePopup = forwardRef((config, selfRef) => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [name, onChangeName] = useState('');
+
+  const { checkName, addFavorite } = useFavorites();
+
+  const handleConfirm = useCallback(() => {
+    if (name.length < 1) {
+      console.log('Digite um nome');
+    } else {
+      const check = checkName(name);
+      if (check) {
+        addFavorite({ name, coord: config.coord });
+        console.log(name, config.coord);
+      }
+    }
+  }, [addFavorite, checkName, config.coord, name]);
 
   const toggleModal = useCallback(() => {
     setModalVisible(!isModalVisible);
@@ -53,36 +70,25 @@ const Popup = forwardRef((config, selfRef) => {
             }}
           />
           <Description>{config.description}</Description>
-          <ButtonContainer>
-            {!!config.button1 && (
-              <Button>
-                <ButtonContent
-                  onPress={() => {
-                    setModalVisible(false);
-                    config.button1.callback();
-                  }}
-                >
-                  {config.button1.text}
-                </ButtonContent>
-              </Button>
-            )}
-            {!!config.button2 && (
-              <Button>
-                <ButtonContent
-                  onPress={() => {
-                    setModalVisible(false);
-                    config.button2.callback();
-                  }}
-                >
-                  {config.button2.text}
-                </ButtonContent>
-              </Button>
-            )}
-          </ButtonContainer>
+          <Input
+            onChangeText={value => onChangeName(value)}
+            value={name}
+            autoCapitalize="words"
+            autoCorrect={false}
+          />
+          <Button>
+            <ButtonContent
+              onPress={() => {
+                handleConfirm();
+              }}
+            >
+              Confirmar
+            </ButtonContent>
+          </Button>
         </InsideContainer>
       </Modal>
     </Container>
   );
 });
 
-export default Popup;
+export default CreateFavoritePopup;
