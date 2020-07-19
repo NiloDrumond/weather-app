@@ -12,7 +12,7 @@ const App = () => {
     <NavigationContainer>
       <StatusBar hidden />
       <AppProvider>
-        <View style={{ flex: 1, backgroundColor: '#00000' }}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(255, 48, 79, 1)' }}>
           <Routes />
         </View>
       </AppProvider>

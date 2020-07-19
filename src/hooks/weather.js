@@ -1,10 +1,12 @@
 /* eslint-disable no-restricted-syntax */
-import React, { createContext, useContext, useCallback } from 'react';
+import React, { createContext, useContext, useCallback, useState } from 'react';
 import { weatherkey } from '../services/weatherapi';
 
 const WeatherContext = createContext();
 
 export const WeatherProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+
   const processForecast = useCallback(data => {
     const forecast = new Map();
     for (const day of data) {
@@ -50,6 +52,7 @@ export const WeatherProvider = ({ children }) => {
 
   const getWeather = useCallback(
     async ({ lat, lon }) => {
+      setLoading(true);
       try {
         // eslint-disable-next-line
         const response = await fetch(
@@ -57,8 +60,10 @@ export const WeatherProvider = ({ children }) => {
         );
         const json = await response.json();
         const weather = processWeather(json);
+        setLoading(false);
         return weather;
       } catch (err) {
+        setLoading(false);
         throw new Error(err);
       }
     },
@@ -66,7 +71,7 @@ export const WeatherProvider = ({ children }) => {
   );
 
   return (
-    <WeatherContext.Provider value={{ getWeather }}>
+    <WeatherContext.Provider value={{ getWeather, loading }}>
       {children}
     </WeatherContext.Provider>
   );
