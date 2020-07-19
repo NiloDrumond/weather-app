@@ -1,12 +1,12 @@
 import React, { useLayoutEffect, useCallback, useState, useRef } from 'react';
 import Geolocation from '@react-native-community/geolocation';
-import { FlatList, Text } from 'react-native';
+import { FlatList, Text, PermissionsAndroid } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 
-import { useWeather } from '../../hooks/weather';
+import { useFavorites } from '../../hooks/favorites';
 import HeaderTitle from '../../components/HeaderTitle';
 import Popup from '../../components/Popup';
 import CreateFavoritePopup from '../../components/CreateFavoritePopup';
@@ -19,50 +19,53 @@ import {
   CityTemp,
 } from './styles';
 
-const exampleData = [
-  {
-    name: 'Recife',
-    temp: 28,
-    weather: 'sunny',
-  },
-  {
-    name: 'BH',
-    temp: 22,
-    weather: 'sunny',
-  },
-];
+const degrees = '\u00B0';
 
 const Home = ({ navigation }) => {
   const [userLocation, setUserLocation] = useState();
 
-  const { getWeather } = useWeather();
+  const { favorites } = useFavorites();
   const addPopupRef = useRef(null);
   const createFavoriteRef = useRef(null);
 
   const handleCityClick = useCallback(
     async name => {
-      const weather = await getWeather(userLocation);
-      console.log(weather);
       navigation.push('Day', { city: name });
     },
-    [getWeather, userLocation, navigation],
+    [navigation],
   );
 
-  const handleGetPosition = useCallback(async () => {
-    await Geolocation.getCurrentPosition(
-      props => {
-        const position = {
-          lat: props.coords.latitude,
-          lon: props.coords.longitude,
-        };
-        setUserLocation({ lat: position.lat, lon: position.lon });
-        createFavoriteRef.current.toggle();
-      },
-      () => {
-        navigation.push('Map');
-      },
-    );
+  const handleGoToMap = useCallback(() => {
+    addPopupRef.current.toggle();
+    navigation.push('Map');
   }, [navigation]);
+
+  const handleGetPosition = useCallback(async () => {
+    if (PermissionsAndroid.check('ACCESS_FINE_LOCATION')) {
+      await Geolocation.getCurrentPosition(
+        props => {
+          const position = {
+            lat: props.coords.latitude,
+            lon: props.coords.longitude,
+          };
+          setUserLocation({ lat: position.lat, lon: position.lon });
+          addPopupRef.current.toggle();
+          createFavoriteRef.current.toggle();
+        },
+        () => {
+          addPopupRef.current.toggle();
+          navigation.push('Map');
+        },
+      );
+    } else {
+      const granted = await PermissionsAndroid.request('ACCESS_FINE_LOCATION');
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        handleGetPosition();
+      } else {
+        handleGoToMap();
+      }
+    }
+  }, [handleGoToMap, navigation]);
 
   const handleAddCity = useCallback(() => {
     addPopupRef.current.toggle();
@@ -94,7 +97,7 @@ const Home = ({ navigation }) => {
           }}
           button2={{
             text: 'Mapa',
-            callback: () => navigation.push('Map'),
+            callback: () => handleGoToMap(),
           }}
         />
         <CreateFavoritePopup
@@ -104,7 +107,7 @@ const Home = ({ navigation }) => {
           isVisible
         />
         <FlatList
-          data={exampleData}
+          data={favorites}
           keyExtractor={city => city.name}
           style={{ width: '100%', flexGrow: 0 }}
           renderItem={({ item: city }) => (
@@ -115,7 +118,10 @@ const Home = ({ navigation }) => {
             >
               <CityTitle>{city.name}</CityTitle>
               <CityWeather>
-                <CityTemp>{city.temp}</CityTemp>
+                <CityTemp>
+                  {Math.trunc(city.weather.current.temp)}
+                  {degrees}
+                </CityTemp>
                 <Icon
                   name="sun"
                   size={30}

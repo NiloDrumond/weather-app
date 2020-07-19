@@ -25,6 +25,14 @@ export const Description = styled.Text`
   text-align: center;
 `;
 
+export const Error = styled.Text`
+  margin-bottom: 10px;
+  font-family: 'Roboto-Regular';
+  font-size: 20px;
+  color: #000;
+  text-align: center;
+`;
+
 export const Input = styled.TextInput`
   width: 90%;
   background-color: rgba(240, 240, 240, 0.8);

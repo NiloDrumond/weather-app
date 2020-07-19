@@ -39,7 +39,7 @@ export const WeatherProvider = ({ children }) => {
             wind: current.wind_speed,
             humidity: current.humidity,
           },
-          temp: 27,
+          temp: current.temp,
         },
         forecast: processForecast(forecast),
       };
@@ -53,7 +53,7 @@ export const WeatherProvider = ({ children }) => {
       try {
         // eslint-disable-next-line
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${weatherkey}`,
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&units=metric&appid=${weatherkey}`,
         );
         const json = await response.json();
         const weather = processWeather(json);

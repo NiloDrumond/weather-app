@@ -27,6 +27,7 @@ export const FavoritesProvider = ({ children }) => {
         weather: await getWeather(coord),
       };
       setFavorites([newFavorite, ...favorites]);
+      console.log(newFavorite);
     },
     [favorites, getWeather],
   );

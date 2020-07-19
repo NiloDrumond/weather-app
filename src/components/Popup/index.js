@@ -58,7 +58,6 @@ const Popup = forwardRef((config, selfRef) => {
               <Button>
                 <ButtonContent
                   onPress={() => {
-                    setModalVisible(false);
                     config.button1.callback();
                   }}
                 >
@@ -70,7 +69,6 @@ const Popup = forwardRef((config, selfRef) => {
               <Button>
                 <ButtonContent
                   onPress={() => {
-                    setModalVisible(false);
                     config.button2.callback();
                   }}
                 >

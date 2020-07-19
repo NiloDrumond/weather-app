@@ -16,22 +16,23 @@ import {
   Description,
   Button,
   ButtonContent,
+  Error,
 } from './styles';
 
 const CreateFavoritePopup = forwardRef((config, selfRef) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [name, onChangeName] = useState('');
+  const [error, setError] = useState();
 
   const { checkName, addFavorite } = useFavorites();
 
   const handleConfirm = useCallback(() => {
     if (name.length < 1) {
-      console.log('Digite um nome');
+      setError('Digite um nome válido!');
     } else {
       const check = checkName(name);
       if (check) {
         addFavorite({ name, coord: config.coord });
-        console.log(name, config.coord);
       }
     }
   }, [addFavorite, checkName, config.coord, name]);
@@ -70,6 +71,7 @@ const CreateFavoritePopup = forwardRef((config, selfRef) => {
             }}
           />
           <Description>{config.description}</Description>
+          {!!error && <Error>{error}</Error>}
           <Input
             onChangeText={value => onChangeName(value)}
             value={name}
