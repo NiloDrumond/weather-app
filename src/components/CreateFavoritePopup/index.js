@@ -33,9 +33,15 @@ const CreateFavoritePopup = forwardRef((config, selfRef) => {
       const check = checkName(name);
       if (check) {
         addFavorite({ name, coord: config.coord });
+        setModalVisible(false);
+        if (config.onComplete) {
+          config.onComplete();
+        }
+      } else {
+        setError('Já existe um favorito com esse nome');
       }
     }
-  }, [addFavorite, checkName, config.coord, name]);
+  }, [addFavorite, checkName, config, name]);
 
   const toggleModal = useCallback(() => {
     setModalVisible(!isModalVisible);

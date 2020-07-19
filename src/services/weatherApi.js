@@ -1,14 +1,1 @@
-import axios from 'axios';
-
-export const weatherForecastApi = axios.create({
-  baseURL: 'https://api.openweathermap.org/data/2.5/forecast',
-});
-
-export const weatherCurrentApi = axios.create({
-  baseURL: 'https://api.openweathermap.org/data/2.5/weather',
-});
-
-// 404
-export const weatherApi = axios.create({
-  baseURL: 'https://api.openweathermap.org/data/2.5/onecall',
-});
+export const weatherkey = 'a59a527dd75c144615c3316f0fd4c6d0';

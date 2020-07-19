@@ -1,11 +1,21 @@
-import React, { useCallback, useLayoutEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { StyleSheet, Keyboard } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import GooglePlacesAutoComplete from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
 
+import { googlekey } from '../../services/googleapi';
 import HeaderTitle from '../../components/HeaderTitle';
+import CreateFavoritePopup from '../../components/CreateFavoritePopup';
 
-import { Container, ReturnButton } from './styles';
+import {
+  Container,
+  ReturnButton,
+  SearchContainer,
+  CalloutTouchable,
+  ConfirmButton,
+  ConfirmButtonText,
+} from './styles';
 
 const mapStyle = [
   {
@@ -276,10 +286,73 @@ const mapStyle = [
   },
 ];
 
+const GooglePlacesAutoCompleteStyle = {
+  container: {
+    flex: 1,
+  },
+  textInputContainer: {
+    backgroundColor: 'rgba(0,0,0,0)',
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+  },
+  textInput: {
+    marginLeft: 0,
+    marginRight: 0,
+    height: 38,
+    color: '#5d5d5d',
+    fontSize: 16,
+  },
+  listView: {
+    backgroundColor: '#Fff',
+  },
+};
+
+const initialRegion = {
+  latitude: -14.235,
+  longitude: -51.9253,
+  latitudeDelta: 30,
+  longitudeDelta: 30,
+};
+
 const Map = ({ navigation }) => {
-  const onLocationSelect = useCallback(coord => {
-    console.log(coord);
+  const [userLocation, setUserLocation] = useState(null);
+  const mapRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const createFavoriteRef = useRef(null);
+
+  const handleLocationSelect = useCallback(coord => {
+    setUserLocation({
+      lat: coord.latitude,
+      lon: coord.longitude,
+    });
   }, []);
+
+  const handleClearInput = useCallback(() => {
+    searchInputRef.current.setAddressText('');
+    Keyboard.dismiss();
+  }, []);
+
+  const handleLocationSearched = useCallback(
+    data => {
+      const coord = data.geometry.location;
+      setUserLocation({ lat: coord.lat, lon: coord.lng });
+      const newRegion = {
+        latitude: coord.lat,
+        longitude: coord.lng,
+        latitudeDelta: 0.5,
+        longitudeDelta: 0.5,
+      };
+      mapRef.current.animateToRegion(newRegion, 300);
+      handleClearInput();
+    },
+    [handleClearInput],
+  );
+
+  const handleConfirm = useCallback(() => {
+    if (userLocation !== null) {
+      createFavoriteRef.current.toggle();
+    }
+  }, [userLocation]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -306,20 +379,71 @@ const Map = ({ navigation }) => {
   }, [navigation]);
   return (
     <Container>
-      <MapView
-        provider={PROVIDER_GOOGLE}
-        customMapStyle={mapStyle}
-        style={{ ...StyleSheet.absoluteFillObject }}
-        initialRegion={{
-          latitude: -14.235,
-          longitude: -51.9253,
-          latitudeDelta: 30,
-          longitudeDelta: 30,
-        }}
-        onPress={e => {
-          onLocationSelect(e.nativeEvent.coordinate);
-        }}
+      <CreateFavoritePopup
+        ref={createFavoriteRef}
+        coord={userLocation}
+        description="Com que nome deseja salvar?"
+        onComplete={() => navigation.pop()}
+        isVisible
       />
+      <SearchContainer>
+        <GooglePlacesAutoComplete
+          ref={searchInputRef}
+          placeholder="Buscar"
+          minLength={2}
+          fetchDetails
+          onPress={(data, details) => {
+            handleLocationSearched(details);
+          }}
+          autoFocus={false}
+          enablePoweredByContainer={false}
+          isRowScrollable={false}
+          returnKeyType="search"
+          listViewDisplayed
+          query={{
+            key: googlekey,
+            language: 'pt-BR',
+            types: '(cities)',
+          }}
+          styles={GooglePlacesAutoCompleteStyle}
+        />
+      </SearchContainer>
+      <CalloutTouchable
+        onPress={() => {
+          handleClearInput();
+        }}
+      >
+        <MapView
+          ref={mapRef}
+          provider={PROVIDER_GOOGLE}
+          customMapStyle={mapStyle}
+          style={{ ...StyleSheet.absoluteFillObject }}
+          initialRegion={initialRegion}
+          onPress={e => {
+            handleLocationSelect(e.nativeEvent.coordinate);
+          }}
+        >
+          {!!userLocation && (
+            <Marker
+              draggable
+              onDragEnd={e => {
+                const coord = e.nativeEvent.coordinate;
+                setUserLocation({
+                  lat: coord.latitude,
+                  lon: coord.longitude,
+                });
+              }}
+              coordinate={{
+                latitude: userLocation.lat,
+                longitude: userLocation.lon,
+              }}
+            />
+          )}
+        </MapView>
+      </CalloutTouchable>
+      <ConfirmButton onPress={() => handleConfirm()}>
+        <ConfirmButtonText>Confirmar</ConfirmButtonText>
+      </ConfirmButton>
     </Container>
   );
 };

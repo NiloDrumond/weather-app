@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import React, { createContext, useContext, useCallback } from 'react';
-import { weatherkey } from '../global';
+import { weatherkey } from '../services/weatherapi';
 
 const WeatherContext = createContext();
 
