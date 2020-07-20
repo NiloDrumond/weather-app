@@ -53,7 +53,7 @@ const CreateFavoritePopup = forwardRef((config, selfRef) => {
     },
     setDefaultName(defaultName) {
       onChangeName(
-        defaultName.length <= 12 ? defaultName : defaultName.slice(0, 11),
+        defaultName.length <= 13 ? defaultName : defaultName.slice(0, 12),
       );
     },
   }));
