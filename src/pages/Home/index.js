@@ -30,7 +30,7 @@ const Home = ({ navigation }) => {
 
   const handleCityClick = useCallback(
     async name => {
-      navigation.push('Day', { city: name });
+      navigation.push('CityWeather', { city: name });
     },
     [navigation],
   );

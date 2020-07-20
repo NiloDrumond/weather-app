@@ -46,7 +46,7 @@ const exampleData = [
 
 const degrees = '\u00B0';
 
-const Day = ({ route, navigation }) => {
+const CityWeather = ({ route, navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => <HeaderTitle>{route.params.city}</HeaderTitle>,
@@ -129,4 +129,4 @@ const Day = ({ route, navigation }) => {
   );
 };
 
-export default Day;
+export default CityWeather;

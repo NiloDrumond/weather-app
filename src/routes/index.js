@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { useWeather } from '../hooks/weather';
 
-import Day from '../pages/Day';
+import CityWeather from '../pages/CityWeather';
 import Home from '../pages/Home';
 import Map from '../pages/Map';
 
@@ -23,7 +23,7 @@ const Routes = () => {
   return (
     <App.Navigator>
       <App.Screen name="Home" component={Home} />
-      <App.Screen name="Day" component={Day} />
+      <App.Screen name="CityWeather" component={CityWeather} />
       <App.Screen name="Map" component={Map} />
     </App.Navigator>
   );

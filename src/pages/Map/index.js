@@ -316,6 +316,7 @@ const initialRegion = {
 
 const Map = ({ navigation }) => {
   const [userLocation, setUserLocation] = useState(null);
+  const [locationName, setLocationName] = useState('');
   const mapRef = useRef(null);
   const searchInputRef = useRef(null);
   const createFavoriteRef = useRef(null);
@@ -325,6 +326,7 @@ const Map = ({ navigation }) => {
       lat: coord.latitude,
       lon: coord.longitude,
     });
+    setLocationName('');
   }, []);
 
   const handleClearInput = useCallback(() => {
@@ -333,8 +335,15 @@ const Map = ({ navigation }) => {
   }, []);
 
   const handleLocationSearched = useCallback(
-    data => {
+    (name, data) => {
       const coord = data.geometry.location;
+      const commaIndex = name.indexOf(',');
+      if (commaIndex > 0) {
+        const parsedName = name.slice(0, commaIndex);
+        setLocationName(parsedName);
+      } else {
+        setLocationName(name);
+      }
       setUserLocation({ lat: coord.lat, lon: coord.lng });
       const newRegion = {
         latitude: coord.lat,
@@ -351,6 +360,7 @@ const Map = ({ navigation }) => {
   const handleConfirm = useCallback(() => {
     if (userLocation !== null) {
       createFavoriteRef.current.toggle();
+      createFavoriteRef.current.setDefaultName(locationName);
     }
   }, [userLocation]);
 
@@ -385,6 +395,7 @@ const Map = ({ navigation }) => {
         description="Com que nome deseja salvar?"
         onComplete={() => navigation.pop()}
         isVisible
+        defaultName={locationName}
       />
       <SearchContainer>
         <GooglePlacesAutoComplete
@@ -393,7 +404,7 @@ const Map = ({ navigation }) => {
           minLength={2}
           fetchDetails
           onPress={(data, details) => {
-            handleLocationSearched(details);
+            handleLocationSearched(data.description, details);
           }}
           autoFocus={false}
           enablePoweredByContainer={false}
