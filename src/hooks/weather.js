@@ -1,6 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 import React, { createContext, useContext, useCallback, useState } from 'react';
+
 import { weatherkey } from '../services/weatherapi';
+import { capitalizeFirst } from '../utils/Utils';
 
 const WeatherContext = createContext();
 
@@ -8,20 +10,20 @@ export const WeatherProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   const processForecast = useCallback(data => {
-    const forecast = new Map();
+    const forecast = [];
     for (const day of data) {
-      forecast.set(day.dt, {
+      forecast.push({
         weather: {
-          main: day.weather.main,
-          id: day.weather,
+          main: day.weather[0].main,
+          id: day.weather[0].id,
           wind: day.wind_speed,
           humidity: day.humidity,
         },
         temp: {
-          day: day.temp.day,
-          night: day.temp.night,
-          eve: day.temp.eve,
-          morn: day.temp.morn,
+          day: Math.trunc(day.temp.day),
+          night: Math.trunc(day.temp.night),
+          eve: Math.trunc(day.temp.eve),
+          morn: Math.trunc(day.temp.morn),
         },
       });
     }
@@ -35,13 +37,15 @@ export const WeatherProvider = ({ children }) => {
       const weather = {
         current: {
           date: new Date(current.dt * 1000),
+          sunrise: current.sunrise,
+          sunset: current.sunset,
           weather: {
-            main: current.weather.main,
-            id: current.weather.id,
-            wind: current.wind_speed,
+            main: capitalizeFirst(current.weather[0].description),
+            id: current.weather[0].id,
+            wind: Math.round(current.wind_speed * 10) / 10,
             humidity: current.humidity,
           },
-          temp: current.temp,
+          temp: Math.trunc(current.temp),
         },
         forecast: processForecast(forecast),
       };
@@ -56,7 +60,7 @@ export const WeatherProvider = ({ children }) => {
       try {
         // eslint-disable-next-line
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&units=metric&appid=${weatherkey}`,
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&lang=pt_br&units=metric&appid=${weatherkey}`,
         );
         const json = await response.json();
         const weather = processWeather(json);
