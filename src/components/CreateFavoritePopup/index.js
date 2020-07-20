@@ -21,7 +21,7 @@ import {
 
 const CreateFavoritePopup = forwardRef((config, selfRef) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [name, onChangeName] = useState(config.defaultName);
+  const [name, onChangeName] = useState('');
   const [error, setError] = useState();
 
   const { checkName, addFavorite } = useFavorites();
@@ -52,7 +52,9 @@ const CreateFavoritePopup = forwardRef((config, selfRef) => {
       toggleModal();
     },
     setDefaultName(defaultName) {
-      onChangeName(defaultName);
+      onChangeName(
+        defaultName.length <= 12 ? defaultName : defaultName.slice(0, 11),
+      );
     },
   }));
 
@@ -87,6 +89,7 @@ const CreateFavoritePopup = forwardRef((config, selfRef) => {
             autoCapitalize="words"
             autoCorrect={false}
             autoFocus
+            maxLength={12}
           />
           <Button>
             <ButtonContent
