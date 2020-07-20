@@ -2,10 +2,10 @@ import React, { useLayoutEffect, useCallback, useState, useRef } from 'react';
 import Geolocation from '@react-native-community/geolocation';
 import { FlatList, Text, PermissionsAndroid } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
-
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 
+import { getIconName } from '../../utils/weatherUtils';
 import { useFavorites } from '../../hooks/favorites';
 import HeaderTitle from '../../components/HeaderTitle';
 import Popup from '../../components/Popup';
@@ -123,7 +123,11 @@ const Home = ({ navigation }) => {
                   {degrees}
                 </CityTemp>
                 <Icon
-                  name="sun"
+                  name={getIconName(
+                    city.weather.current.weather.id,
+                    city.weather.current.sunrise,
+                    city.weather.current.sunset,
+                  )}
                   size={30}
                   color="#fff"
                   style={{ paddingLeft: 5 }}
