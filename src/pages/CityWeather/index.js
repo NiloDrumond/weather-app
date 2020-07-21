@@ -1,4 +1,9 @@
-import React, { useLayoutEffect, useState, useCallback } from 'react';
+import React, {
+  useLayoutEffect,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
 import { useHeaderHeight } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -10,6 +15,7 @@ import {
   getMainTemp,
   getIconName,
   getIconNameSimple,
+  getBackground,
 } from '../../utils/weatherUtils';
 import {
   capitalizeFirst,
@@ -53,6 +59,7 @@ const CityWeather = ({ route, navigation }) => {
   const [city, setCity] = useState(
     favorites.find(item => item.name === route.params.city),
   );
+  const [gradientColor, setGradientColor] = useState(['#FF512F', '#F09819']);
 
   const getDate = useCallback(() => {
     moment.locale('pt-br');
@@ -67,6 +74,15 @@ const CityWeather = ({ route, navigation }) => {
       capitalizeFirst(moment().add(skip, 'days').format('dddd')),
     );
   }, []);
+
+  useEffect(() => {
+    const gradient = getBackground(
+      city.weather.current.weather.id,
+      city.weather.current.sunrise,
+      city.weather.current.sunset,
+    );
+    setGradientColor(gradient);
+  }, [city.weather]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -89,7 +105,9 @@ const CityWeather = ({ route, navigation }) => {
 
   return (
     <LinearGradient
-      colors={['#FF512F', '#F09819']}
+      colors={gradientColor}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
       locations={[0, 1]}
       style={{ flex: 1, alignItems: 'center', jusitifyContent: 'center' }}
     >

@@ -62,3 +62,4 @@ buck-out/
 .env
 android/app/src/main/AndroidManifest.xml
 src/services
+.VSCodeCounter

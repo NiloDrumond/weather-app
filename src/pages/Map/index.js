@@ -362,7 +362,7 @@ const Map = ({ navigation }) => {
       createFavoriteRef.current.toggle();
       createFavoriteRef.current.setDefaultName(locationName);
     }
-  }, [userLocation]);
+  }, [locationName, userLocation]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -430,6 +430,7 @@ const Map = ({ navigation }) => {
           customMapStyle={mapStyle}
           style={{ ...StyleSheet.absoluteFillObject }}
           initialRegion={initialRegion}
+          rotateEnabled={false}
           onPress={e => {
             handleLocationSelect(e.nativeEvent.coordinate);
           }}
