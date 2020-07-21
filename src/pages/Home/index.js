@@ -27,11 +27,19 @@ const Home = ({ navigation }) => {
   const addPopupRef = useRef(null);
   const createFavoriteRef = useRef(null);
 
+  const [, updateState] = useState();
+
+  const forceUpdate = useCallback(() => updateState({}), []);
+
+  const refreshFavorites = useCallback(() => {
+    forceUpdate();
+  }, [forceUpdate]);
+
   const handleCityClick = useCallback(
     async name => {
-      navigation.push('CityWeather', { city: name });
+      navigation.push('CityWeather', { city: name, refresh: refreshFavorites });
     },
-    [navigation],
+    [navigation, refreshFavorites],
   );
 
   const handleGoToMap = useCallback(() => {

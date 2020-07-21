@@ -120,7 +120,12 @@ const CityWeather = ({ route, navigation }) => {
       headerStyle: { borderBottomWidth: 0, height: 70 },
 
       headerLeft: () => (
-        <ReturnButton onPress={() => navigation.pop()}>
+        <ReturnButton
+          onPress={() => {
+            route.params.refresh();
+            navigation.pop();
+          }}
+        >
           <Icon name="chevron-left" size={30} color="#fff" />
         </ReturnButton>
       ),
@@ -130,7 +135,7 @@ const CityWeather = ({ route, navigation }) => {
         </SettingsButton>
       ),
     });
-  }, [city.name, handleSettings, navigation, route.params.city]);
+  }, [city.name, handleSettings, navigation, route.params, route.params.city]);
 
   return (
     <LinearGradient
