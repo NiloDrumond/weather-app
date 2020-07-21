@@ -1,12 +1,34 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import { useWeather } from './weather';
 
 const FavoritesContext = createContext();
+const storageKey = '@weatherapp:favorites';
 
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { getWeather } = useWeather();
+
+  useEffect(() => {
+    async function loadStoredData() {
+      const loadedFavorites = await AsyncStorage.getItem(storageKey);
+      if (loadedFavorites) {
+        setFavorites(JSON.parse(loadedFavorites));
+      }
+      setLoading(false);
+    }
+
+    loadStoredData();
+  }, []);
 
   const checkName = useCallback(
     name => {
@@ -19,6 +41,24 @@ export const FavoritesProvider = ({ children }) => {
     [favorites],
   );
 
+  const removeFavorite = useCallback(async name => {
+    setFavorites([]);
+    await AsyncStorage.removeItem(storageKey);
+  }, []);
+
+  const editFavorite = useCallback(
+    async (currentName, name) => {
+      const favorite = favorites.find(item => item.name === currentName);
+      favorite.name = name;
+      const newFavorites = [
+        favorite,
+        ...favorites.filter(item => item.name !== name),
+      ];
+      await AsyncStorage.setItem(storageKey, JSON.stringify(newFavorites));
+    },
+    [favorites],
+  );
+
   const addFavorite = useCallback(
     async ({ name, coord }) => {
       const newFavorite = {
@@ -26,7 +66,9 @@ export const FavoritesProvider = ({ children }) => {
         coord,
         weather: await getWeather(coord),
       };
-      setFavorites([newFavorite, ...favorites]);
+      const newFavorites = [newFavorite, ...favorites];
+      setFavorites(newFavorites);
+      await AsyncStorage.setItem(storageKey, JSON.stringify(newFavorites));
     },
     [favorites, getWeather],
   );
@@ -45,7 +87,15 @@ export const FavoritesProvider = ({ children }) => {
 
   return (
     <FavoritesContext.Provider
-      value={{ favorites, update, addFavorite, checkName }}
+      value={{
+        favorites,
+        loading,
+        update,
+        addFavorite,
+        checkName,
+        removeFavorite,
+        editFavorite,
+      }}
     >
       {children}
     </FavoritesContext.Provider>

@@ -24,24 +24,30 @@ const CreateFavoritePopup = forwardRef((config, selfRef) => {
   const [name, onChangeName] = useState('');
   const [error, setError] = useState();
 
-  const { checkName, addFavorite } = useFavorites();
+  const { checkName, addFavorite, editFavorite } = useFavorites();
 
   const handleConfirm = useCallback(() => {
     if (name.length < 1) {
       setError('Digite um nome válido!');
+    } else if (name === config.currentName) {
+      setError('Mude para um nome diferente');
     } else {
       const check = checkName(name);
       if (check) {
-        addFavorite({ name, coord: config.coord });
+        if (config.editing) {
+          editFavorite(config.currentName, name);
+        } else {
+          addFavorite({ name, coord: config.coord });
+        }
         setModalVisible(false);
         if (config.onComplete) {
-          config.onComplete();
+          config.onComplete(name);
         }
       } else {
         setError('Já existe um favorito com esse nome');
       }
     }
-  }, [addFavorite, checkName, config, name]);
+  }, [addFavorite, checkName, config, editFavorite, name]);
 
   const toggleModal = useCallback(() => {
     setModalVisible(!isModalVisible);

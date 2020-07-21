@@ -3,6 +3,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { useWeather } from '../hooks/weather';
+import { useFavorites } from '../hooks/favorites';
 
 import CityWeather from '../pages/CityWeather';
 import Home from '../pages/Home';
@@ -12,8 +13,9 @@ const App = createStackNavigator();
 
 const Routes = () => {
   const { loading } = useWeather();
+  const { loading: favoriteLoading } = useFavorites();
 
-  if (loading) {
+  if (loading || favoriteLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#999" />

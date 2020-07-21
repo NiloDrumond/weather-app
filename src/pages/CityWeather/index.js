@@ -3,6 +3,7 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useRef,
 } from 'react';
 import { useHeaderHeight } from '@react-navigation/stack';
 import moment from 'moment';
@@ -23,6 +24,8 @@ import {
   shortenDay,
 } from '../../utils/Utils';
 import { useFavorites } from '../../hooks/favorites';
+import Popup from '../../components/Popup';
+import CreateFavoritePopup from '../../components/CreateFavoritePopup';
 
 import {
   Container,
@@ -54,12 +57,19 @@ const degrees = '\u00B0';
 const ms = '\u33A7';
 
 const CityWeather = ({ route, navigation }) => {
-  const { favorites } = useFavorites();
-  /* eslint-disable-next-line */
+  const { favorites, removeFavorite } = useFavorites();
   const [city, setCity] = useState(
     favorites.find(item => item.name === route.params.city),
   );
+  const [cityName, setCityName] = useState(route.params.city);
   const [gradientColor, setGradientColor] = useState(['#FF512F', '#F09819']);
+
+  const settingsPopupRef = useRef(null);
+  const createFavoriteRef = useRef(null);
+
+  useEffect(() => {
+    setCity(favorites.find(item => item.name === cityName));
+  }, [cityName, favorites]);
 
   const getDate = useCallback(() => {
     moment.locale('pt-br');
@@ -73,6 +83,25 @@ const CityWeather = ({ route, navigation }) => {
     return shortenDay(
       capitalizeFirst(moment().add(skip, 'days').format('dddd')),
     );
+  }, []);
+
+  const handleRemove = useCallback(() => {
+    settingsPopupRef.current.toggle();
+    navigation.pop();
+    removeFavorite(city.name);
+  }, [city.name, navigation, removeFavorite]);
+
+  const handleEdit = useCallback(() => {
+    createFavoriteRef.current.toggle();
+  }, []);
+
+  const handleEditComplete = useCallback(newName => {
+    setCityName(newName);
+    settingsPopupRef.current.toggle();
+  }, []);
+
+  const handleSettings = useCallback(() => {
+    settingsPopupRef.current.toggle();
   }, []);
 
   useEffect(() => {
@@ -96,12 +125,12 @@ const CityWeather = ({ route, navigation }) => {
         </ReturnButton>
       ),
       headerRight: () => (
-        <SettingsButton onPress={() => console.log('settings')}>
+        <SettingsButton onPress={() => handleSettings()}>
           <Icon name="settings" size={30} color="#fff" />
         </SettingsButton>
       ),
     });
-  }, [city.name, navigation, route.params.city]);
+  }, [city.name, handleSettings, navigation, route.params.city]);
 
   return (
     <LinearGradient
@@ -112,6 +141,27 @@ const CityWeather = ({ route, navigation }) => {
       style={{ flex: 1, alignItems: 'center', jusitifyContent: 'center' }}
     >
       <Container headerHeight={`${useHeaderHeight()}px`}>
+        <Popup
+          ref={settingsPopupRef}
+          description="O que deseja fazer?"
+          isVisible
+          button1={{
+            text: 'Editar',
+            callback: () => handleEdit(),
+          }}
+          button2={{
+            text: 'Apagar',
+            callback: () => handleRemove(),
+          }}
+        />
+        <CreateFavoritePopup
+          ref={createFavoriteRef}
+          currentName={city.name}
+          editing
+          description="Digite o novo nome do favorito"
+          isVisible
+          onComplete={newName => handleEditComplete(newName)}
+        />
         <MainSection>
           <WeatherDescription>
             <Icon

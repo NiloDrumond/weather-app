@@ -23,7 +23,6 @@ const degrees = '\u00B0';
 
 const Home = ({ navigation }) => {
   const [userLocation, setUserLocation] = useState();
-
   const { favorites } = useFavorites();
   const addPopupRef = useRef(null);
   const createFavoriteRef = useRef(null);
