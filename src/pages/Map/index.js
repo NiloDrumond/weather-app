@@ -3,8 +3,8 @@ import { StyleSheet, Keyboard } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import GooglePlacesAutoComplete from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
+import env from 'react-native-config';
 
-import { googlekey } from '../../services/googleapi';
 import HeaderTitle from '../../components/HeaderTitle';
 import CreateFavoritePopup from '../../components/CreateFavoritePopup';
 
@@ -412,7 +412,7 @@ const Map = ({ navigation }) => {
           returnKeyType="search"
           listViewDisplayed
           query={{
-            key: googlekey,
+            key: env.GOOGLE_API_KEY,
             language: 'pt-BR',
             types: '(cities)',
           }}

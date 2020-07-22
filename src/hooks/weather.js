@@ -1,7 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 import React, { createContext, useContext, useCallback, useState } from 'react';
+import env from 'react-native-config';
 
-import { weatherkey, weatherapi } from '../services/weatherapi';
+import { weatherapi } from '../services/weatherapi';
 import { capitalizeFirst } from '../utils/Utils';
 
 const WeatherContext = createContext();
@@ -60,7 +61,7 @@ export const WeatherProvider = ({ children }) => {
       try {
         // eslint-disable-next-line
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&lang=pt_br&units=metric&appid=${weatherkey}`,
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&lang=pt_br&units=metric&appid=${env.WEATHER_API_KEY}`,
         );
         // const response = await weatherapi.get(
         //   `?lat=${lat}&lon=${lon}&exclude=hourly,minutely&lang=pt_br&units=metric&appid=${weatherkey}`,
