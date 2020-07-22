@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -13,7 +13,11 @@ const App = createStackNavigator();
 
 const Routes = () => {
   const { loading } = useWeather();
-  const { loading: favoriteLoading } = useFavorites();
+  const { loading: favoriteLoading, update } = useFavorites();
+
+  useEffect(() => {
+    update();
+  }, []);
 
   if (loading || favoriteLoading) {
     return (

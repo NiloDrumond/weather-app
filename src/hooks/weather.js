@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import React, { createContext, useContext, useCallback, useState } from 'react';
 
-import { weatherkey } from '../services/weatherapi';
+import { weatherkey, weatherapi } from '../services/weatherapi';
 import { capitalizeFirst } from '../utils/Utils';
 
 const WeatherContext = createContext();
@@ -62,13 +62,16 @@ export const WeatherProvider = ({ children }) => {
         const response = await fetch(
           `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&lang=pt_br&units=metric&appid=${weatherkey}`,
         );
+        // const response = await weatherapi.get(
+        //   `?lat=${lat}&lon=${lon}&exclude=hourly,minutely&lang=pt_br&units=metric&appid=${weatherkey}`,
+        // );
         const json = await response.json();
         const weather = processWeather(json);
         setLoading(false);
         return weather;
       } catch (err) {
         setLoading(false);
-        throw new Error(err);
+        throw new Error(err.response);
       }
     },
     [processWeather],
