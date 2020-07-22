@@ -41,10 +41,14 @@ export const FavoritesProvider = ({ children }) => {
     [favorites],
   );
 
-  const removeFavorite = useCallback(async name => {
-    setFavorites([]);
-    await AsyncStorage.removeItem(storageKey);
-  }, []);
+  const removeFavorite = useCallback(
+    async name => {
+      const newFavorites = favorites.filter(item => item.name !== name);
+      setFavorites(newFavorites);
+      await AsyncStorage.setItem(storageKey, JSON.stringify(newFavorites));
+    },
+    [favorites],
+  );
 
   const editFavorite = useCallback(
     async (currentName, name) => {

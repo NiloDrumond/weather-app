@@ -58,6 +58,7 @@ const ms = '\u33A7';
 
 const CityWeather = ({ route, navigation }) => {
   const { favorites, removeFavorite } = useFavorites();
+  const [removing, setRemoving] = useState(false);
   const [city, setCity] = useState(
     favorites.find(item => item.name === route.params.city),
   );
@@ -70,6 +71,14 @@ const CityWeather = ({ route, navigation }) => {
   useEffect(() => {
     setCity(favorites.find(item => item.name === cityName));
   }, [cityName, favorites]);
+
+  useEffect(() => {
+    return () => {
+      if (removing) {
+        removeFavorite(cityName);
+      }
+    };
+  }, [cityName, removeFavorite, removing]);
 
   const getDate = useCallback(() => {
     moment.locale('pt-br');
@@ -87,9 +96,9 @@ const CityWeather = ({ route, navigation }) => {
 
   const handleRemove = useCallback(() => {
     settingsPopupRef.current.toggle();
+    setRemoving(true);
     navigation.pop();
-    removeFavorite(city.name);
-  }, [city.name, navigation, removeFavorite]);
+  }, [navigation]);
 
   const handleEdit = useCallback(() => {
     createFavoriteRef.current.toggle();
