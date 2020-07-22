@@ -1,7 +1,8 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StatusBar, LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import SplashScreen from 'react-native-splash-screen';
 
 import AppProvider from './hooks';
 
@@ -13,6 +14,10 @@ LogBox.ignoreLogs([
 ]);
 
 const App = () => {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+
   return (
     <NavigationContainer>
       <StatusBar hidden />
