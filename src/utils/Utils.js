@@ -12,7 +12,10 @@ export function capitalizeMonth(string) {
 }
 
 export function shortenDay(string) {
-  return string.slice(0, string.indexOf('-'));
+  if (string.includes('-')) {
+    return string.slice(0, string.indexOf('-'));
+  }
+  return string;
 }
 
 export function firstDigit(number) {
