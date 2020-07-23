@@ -305,6 +305,12 @@ const GooglePlacesAutoCompleteStyle = {
   listView: {
     backgroundColor: '#Fff',
   },
+  description: {
+    color: '#000000',
+  },
+  predefinedPlacesDescription: {
+    color: '#000000',
+  },
 };
 
 const initialRegion = {
