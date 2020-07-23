@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
+import { StatusBar } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -126,7 +127,10 @@ const CityWeather = ({ route, navigation }) => {
     navigation.setOptions({
       headerTitle: () => <HeaderTitle>{city.name}</HeaderTitle>,
       headerTransparent: true,
-      headerStyle: { borderBottomWidth: 0, height: 70 },
+      headerStyle: {
+        borderBottomWidth: 0,
+        height: 70 + StatusBar.currentHeight,
+      },
 
       headerLeft: () => (
         <ReturnButton
@@ -154,6 +158,7 @@ const CityWeather = ({ route, navigation }) => {
       locations={[0, 1]}
       style={{ flex: 1, alignItems: 'center', jusitifyContent: 'center' }}
     >
+      <StatusBar translucent backgroundColor="transparent" />
       <Container headerHeight={`${useHeaderHeight()}px`}>
         <Popup
           ref={settingsPopupRef}

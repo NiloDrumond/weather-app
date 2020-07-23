@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useCallback, useState, useRef } from 'react';
 import Geolocation from '@react-native-community/geolocation';
-import { FlatList, Text, PermissionsAndroid } from 'react-native';
+import { FlatList, Text, PermissionsAndroid, StatusBar } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
@@ -82,7 +82,10 @@ const Home = ({ navigation }) => {
     navigation.setOptions({
       headerTitle: () => <HeaderTitle>Favoritos</HeaderTitle>,
       headerTransparent: true,
-      headerStyle: { borderBottomWidth: 0 },
+      headerStyle: {
+        borderBottomWidth: 0,
+        height: 70 + StatusBar.currentHeight,
+      },
     });
   }, [navigation]);
   return (
@@ -91,8 +94,14 @@ const Home = ({ navigation }) => {
       end={{ x: 0, y: 1 }}
       colors={['#E820A2', '#09DEE8']}
       locations={[0, 1]}
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+      }}
     >
+      <StatusBar translucent backgroundColor="transparent" />
       <Container headerHeight={`${useHeaderHeight()}px`}>
         <Popup
           ref={addPopupRef}

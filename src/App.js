@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
-import { View, StatusBar, LogBox } from 'react-native';
+import { View, LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen';
 
@@ -20,7 +20,6 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <StatusBar hidden />
       <AppProvider>
         <View style={{ flex: 1, backgroundColor: 'rgba(255, 48, 79, 1)' }}>
           <Routes />

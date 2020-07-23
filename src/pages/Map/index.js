@@ -1,5 +1,5 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { StyleSheet, Keyboard } from 'react-native';
+import { StyleSheet, Keyboard, StatusBar } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import GooglePlacesAutoComplete from 'react-native-google-places-autocomplete';
 import Icon from 'react-native-vector-icons/Feather';
@@ -377,7 +377,7 @@ const Map = ({ navigation }) => {
       ),
       headerStyle: {
         borderBottomWidth: 0,
-        height: 70,
+        height: 70 + StatusBar.currentHeight,
         backgroundColor: 'rgba(255, 48, 79, 1)',
       },
       headerTitleContainerStyle: {
@@ -395,6 +395,7 @@ const Map = ({ navigation }) => {
   }, [navigation]);
   return (
     <Container>
+      <StatusBar translucent backgroundColor="transparent" />
       <CreateFavoritePopup
         ref={createFavoriteRef}
         coord={userLocation}
