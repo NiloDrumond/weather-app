@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useCallback, useState, useRef } from 'react';
-import Geolocation from '@react-native-community/geolocation';
+// import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import { FlatList, Text, PermissionsAndroid, StatusBar } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/stack';
 import LinearGradient from 'react-native-linear-gradient';
@@ -48,8 +49,11 @@ const Home = ({ navigation }) => {
   }, [navigation]);
 
   const handleGetPosition = useCallback(async () => {
-    if (PermissionsAndroid.check('ACCESS_FINE_LOCATION')) {
-      await Geolocation.getCurrentPosition(
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      Geolocation.getCurrentPosition(
         props => {
           const position = {
             lat: props.coords.latitude,
@@ -65,12 +69,7 @@ const Home = ({ navigation }) => {
         },
       );
     } else {
-      const granted = await PermissionsAndroid.request('ACCESS_FINE_LOCATION');
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        handleGetPosition();
-      } else {
-        handleGoToMap();
-      }
+      handleGoToMap();
     }
   }, [handleGoToMap, navigation]);
 
